@@ -15,8 +15,8 @@ stages:
     displayName: Build
     pool:
       vmImage: 'ubuntu-latest'
-    services:
-      neuvector: neuvector
+    #services:
+    #  neuvector: neuvector
     steps:
     - task: Docker@2
       displayName: Build and Push an image
@@ -32,42 +32,24 @@ stages:
       displayName: Get NeuVector license
       inputs:
         secureFile: 'license-may.txt'
-    #- task: NeuVectorScan@1
-     # inputs:
-      #  controllerType: 'external'
-       # neuvectorController: 'nv-gke'
-       # containerRegistry: 'dockerhub'
-       # repository: 'achdevops/holapy-azure'
-        #tag: '$(Build.BuildId)'
-        #reportJsonOutputPath: '$(Pipeline.Workspace)/report.json'
+    - task: NeuVectorScan@1
+      inputs:
+        controllerType: 'external'
+        neuvectorController: 'nv-gke'
+        containerRegistry: 'dockerhub'
+        repository: 'achdevops/holapy-azure'
+        tag: '$(Build.BuildId)'
+        reportJsonOutputPath: '$(Pipeline.Workspace)/report.json'
         #failOnHighSeverityThreshold: true
         #highSeverityThreshold: '1'
         #failOnMediumSeverityThreshold: true
         #mediumSeverityThreshold: '3'
-    - task: NeuVectorScan@1
-      inputs:
-        controllerType: 'local'
-        controllerLicense: '$(neuvectorLicense.secureFilePath)'
-        containerRegistry: 'dockerhub'
-        repository: 'achdevops/holapy-azure'
-        tag: '$(Build.BuildId)'
+    #- task: NeuVectorScan@1
+    #  inputs:
+    #    controllerType: 'local'
+    #    controllerLicense: '$(neuvectorLicense.secureFilePath)'
+    #    containerRegistry: 'dockerhub'
+    #    repository: 'achdevops/holapy-azure'
+    #    tag: '$(Build.BuildId)'
     - download: current
       patterns: '**/*.json'
-resources:
-  containers:
-  - container: neuvector
-    image: neuvector/allinone
-    endpoint: 'dockerhub'
-    ports:
-      - 18300:18300
-      - 18301:18301
-      - 18400:18400
-      - 18401:18401
-      - 10443:10443
-    volumes:
-      - /lib/modules:/lib/modules
-      - /var/neuvector:/var/neuvector
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /sys/fs/cgroup:/host/cgroup
-      - /proc:/host/proc
-    options: --pid=host --cap-add=SYS_ADMIN --cap-add=NET_ADMIN --cap-add=SYS_PTRACE --cap-add=IPC_LOCK --security-opt apparmor:unconfined --env CLUSTER_JOIN_ADDR=neuvector --env CTRL_SERVER_PORT=10443
