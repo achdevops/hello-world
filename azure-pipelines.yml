@@ -55,7 +55,7 @@ resources:
   containers:
   - container: neuvector
     image: neuvector/allinone
-    endpoint: 'Docker Hub'
+    endpoint: 'dockerhub'
     ports:
       - 18300:18300
       - 18301:18301
