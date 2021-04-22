@@ -30,17 +30,24 @@ stages:
       displayName: Get NeuVector license
       inputs:
         secureFile: 'neuvector-license.txt'
-    - task: NeuVectorScan@1
-      inputs:
-        controllerType: 'external'
-        neuvectorController: 'nv-gke'
-        containerRegistry: 'dockerhub'
-        repository: 'achdevops/holapy-azure'
-        tag: '$(Build.BuildId)'
-        reportJsonOutputPath: '$(Pipeline.Workspace)/report.json'
+    #- task: NeuVectorScan@1
+     # inputs:
+      #  controllerType: 'external'
+       # neuvectorController: 'nv-gke'
+       # containerRegistry: 'dockerhub'
+       # repository: 'achdevops/holapy-azure'
+        #tag: '$(Build.BuildId)'
+        #reportJsonOutputPath: '$(Pipeline.Workspace)/report.json'
         #failOnHighSeverityThreshold: true
         #highSeverityThreshold: '1'
         #failOnMediumSeverityThreshold: true
         #mediumSeverityThreshold: '3'
+    - task: NeuVectorScan@1
+      inputs:
+        controllerType: 'local'
+        controllerLicense: 'LuSfWEhKb6R+QzwQHcnjZY2I9iSNmQ7hAxh5tFLl70FHxDC0d6jsqO+okzplRuXN35yS7mw0gh+pk3uc0RZQWDNs1Be9XfdHHBY1LA01SBGGKG2qbNjGkEDJvWt18XJXyQz6RymFz0UMQJDXlHI3VY5rDQbj5zcYtqZr/J4T6NrHaoROlJ2+XhJqybpP+aWaWK+cXbUUDjcahtpkvIssrxvNTE4nes3kYMsi37W//GE3/a+0LGISPvaA/P1GQEX4UICMq+zOCj60nP5zSkUVzdgGEWiS59R6OXfVoHp4a1RrSBeUlBR9JQJpGMbtirL+slqjbQSaTKZiGYcnFnfG3eDHA2pUl8O7Cqb91NciXILqRH3Qmh2Zdw7HV+gLKPw+ygoGvTxcXQw/Fu65oilMs5n5McZGUVx/QcG02zSvoc6Zqy6Y68fDhtbhxMGYpt3OwCS5rwDPlaDyhRgppRffBa38UxAHw/973rQ1dIK1dK+aCBvtql2Iz5S0XKuBJ7mqDqkxOmgfLgqdkPo+VoB5fVW9ssD9NIGccjarbYTGjHs82pfw39oBt96xbbYHzwLbnw6TivyXQ3XpW1CYkyaYrEc1d0do+3C+24+Ma+fAbi8aQH+loAJnJaogTopIY9oT+rQyL7ZO+Cov0+d67cDLlDsuoQUyPFYbmCxZX5Xyn8FtuHAGHo0Y6257wXGIItT02Z9yoSZWYPEMStrJjmmhqHtnacZcJdH+YBHqz5HS3cEporJztu2uKMcwBA0uaoKSNRm3Fv87AGpbYffiuyL8OXBRBXy0ZLGilksVP4v9HV5Q3B8pZMVKeFDxyiRyd0M5gOqGww=='
+        containerRegistry: 'dockerhub'
+        repository: 'achdevops/holapy-azure'
+        tag: '$(Build.BuildId)'
     - download: current
       patterns: '**/*.json'
