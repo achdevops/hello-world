@@ -51,3 +51,21 @@ stages:
         tag: '$(Build.BuildId)'
     - download: current
       patterns: '**/*.json'
+resources:
+  containers:
+  - container: neuvector
+    image: neuvector/allinone
+    endpoint: 'Docker Hub'
+    ports:
+      - 18300:18300
+      - 18301:18301
+      - 18400:18400
+      - 18401:18401
+      - 10443:10443
+    volumes:
+      - /lib/modules:/lib/modules
+      - /var/neuvector:/var/neuvector
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /sys/fs/cgroup:/host/cgroup
+      - /proc:/host/proc
+    options: --pid=host --cap-add=SYS_ADMIN --cap-add=NET_ADMIN --cap-add=SYS_PTRACE --cap-add=IPC_LOCK --security-opt apparmor:unconfined --env CLUSTER_JOIN_ADDR=neuvector --env CTRL_SERVER_PORT=10443
