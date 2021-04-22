@@ -54,7 +54,7 @@ stages:
 resources:
   containers:
   - container: neuvector
-    image: neuvector/allinone
+    image: neuvector/controller:3.0.0.b3
     endpoint: 'dockerhub'
     ports:
       - 18300:18300
