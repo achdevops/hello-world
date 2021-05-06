@@ -25,8 +25,22 @@ stages:
         repository: 'achdevops/holapy-azure'
         command: 'build'
         dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
-        tags: |
-          $(tag)
+        tags: $(tag)
+    
+    - task: DownloadSecureFile@1
+      name: neuvectorLicense
+      displayName: Get NeuVector license
+      inputs:
+        secureFile: 'license-may.txt'
+    - task: NeuVectorScan@1
+      inputs:
+        controllerType: 'local'
+        controllerLicense: '$(neuvectorLicense.secureFilePath)'
+        #containerRegistry: 'dockerhub'
+        repository: 'achdevops/holapy-azure'
+        tag: '$(Build.BuildId)'    
+    - download: current
+      patterns: '**/*.json'
     
     - task: Docker@2
       displayName: Push Image
@@ -38,30 +52,16 @@ stages:
         tags: |
           $(tag)
           
-    - task: DownloadSecureFile@1
-      name: neuvectorLicense
-      displayName: Get NeuVector license
-      inputs:
-        secureFile: 'license-may.txt'
-    - task: NeuVectorScan@1
-      inputs:
-        controllerType: 'external'
-        neuvectorController: 'nv-gke'
-        containerRegistry: 'dockerhub'
-        repository: 'achdevops/holapy-azure'
-        tag: '$(Build.BuildId)'
-        reportJsonOutputPath: '$(Pipeline.Workspace)/report.json'
+    
+    #- task: NeuVectorScan@1
+    #  inputs:
+    #    controllerType: 'external'
+    #    neuvectorController: 'nv-gke'
+    #    containerRegistry: 'dockerhub'
+    #    repository: 'achdevops/holapy-azure'
+    #    tag: '$(Build.BuildId)'
+    #    reportJsonOutputPath: '$(Pipeline.Workspace)/report.json'
         #failOnHighSeverityThreshold: true
         #highSeverityThreshold: '1'
         #failOnMediumSeverityThreshold: true
         #mediumSeverityThreshold: '3'
-    #- task: NeuVectorScan@1
-    #  inputs:
-    #    controllerType: 'local'
-    #    controllerLicense: '$(neuvectorLicense.secureFilePath)'
-    #    containerRegistry: 'dockerhub'
-    #    repository: 'achdevops/holapy-azure'
-    #    tag: '$(Build.BuildId)'
-    
-    - download: current
-      patterns: '**/*.json'
