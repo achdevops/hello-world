@@ -1,0 +1,56 @@
+trigger:
+- main
+
+variables:
+  tag: '$(Build.BuildId)'
+
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:  
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: 'ubuntu-latest'
+    #services:
+    #  neuvector: neuvector
+    steps:
+    - task: Docker@2
+      displayName: Build Image
+      inputs:
+        #containerRegistry: 'dockerhub'
+        repository: 'achdevops/holapy-azure'
+        command: 'build'
+        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+        tags: $(tag)
+    - task: Docker@2
+      displayName: Push Image
+      inputs:
+        containerRegistry: 'dockerhub'
+        repository: 'achdevops/holapy-azure'
+        command: 'push'
+        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+        tags: |
+          $(tag)
+        
+    - task: DownloadSecureFile@1
+      name: neuvectorLicense
+      displayName: Get NeuVector license
+      inputs:
+        secureFile: 'license-may.txt'
+
+    - task: NeuVectorScan@1
+      inputs:
+        controllerType: 'external'
+        neuvectorController: 'nv-gke'
+        containerRegistry: 'dockerhub'
+        repository: 'achdevops/holapy-azure'
+        tag: '$(Build.BuildId)'
+        reportJsonOutputPath: '$(Pipeline.Workspace)/report.json'
+        #failOnHighSeverityThreshold: true
+        #highSeverityThreshold: '1'
+        #failOnMediumSeverityThreshold: true
+        #mediumSeverityThreshold: '3'
+     
+    - download: current
+      patterns: '**/*.json'
