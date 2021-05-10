@@ -39,7 +39,6 @@ stages:
         nvContainerRegistry: 'dockerhub'
         nvRepository: 'neuvector/scanner'
         nvTag: 'latest'
-        containerRegistry: 'dockerhub'
         repository: 'achdevops/holapy-azure'
         tag: '$(Build.BuildId)'    
     - task: Docker@2
