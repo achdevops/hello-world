@@ -32,13 +32,29 @@ stages:
       displayName: Get NeuVector license
       inputs:
         secureFile: 'license-may.txt'
-    - task: NeuVectorScan@1
+    
+    - task: NeuVectorScan@2
+      displayName: Scan image with NeuVector
       inputs:
-        controllerType: 'local'
-        controllerLicense: '$(neuvectorLicense.secureFilePath)'
-        #containerRegistry: 'dockerhub'
+        scanType: 'standalone'
+        license: '$(neuvectorLicense.secureFilePath)'
+        nvContainerRegistry: 'dockerhub'
+        nvRepository: 'neuvector/scanner'
+        nvTag: 'latest'
+        containerRegistry: 'Docker Hub'
         repository: 'achdevops/holapy-azure'
-        tag: '$(Build.BuildId)'    
+        tag: '$(Build.BuildId)'
+        failOnHighSeverityThreshold: false
+        highSeverityThreshold: '2'
+        failOnMediumSeverityThreshold: false
+        mediumSeverityThreshold: '4'
+    #- task: NeuVectorScan@1
+    #  inputs:
+    #    controllerType: 'local'
+    #    controllerLicense: '$(neuvectorLicense.secureFilePath)'
+    #    #containerRegistry: 'dockerhub'
+    #    repository: 'achdevops/holapy-azure'
+    #    tag: '$(Build.BuildId)'    
     - download: current
       patterns: '**/*.json'
     
