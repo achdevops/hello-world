@@ -8,20 +8,18 @@ variables:
   tag: '$(Build.BuildId)'
 
 stages:
-- stage: Build
+- stage: Build - Scan and Publish
   displayName: Build image
   jobs:  
   - job: Build
     displayName: Build
     pool:
       vmImage: 'ubuntu-latest'
-    #services:
-    #  neuvector: neuvector
+
     steps:
     - task: Docker@2
       displayName: Build Image
       inputs:
-        #containerRegistry: 'dockerhub'
         repository: 'achdevops/holapy-azure'
         command: 'build'
         dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
@@ -43,21 +41,7 @@ stages:
         nvTag: 'latest'
         containerRegistry: 'dockerhub'
         repository: 'achdevops/holapy-azure'
-        tag: '$(Build.BuildId)'
-        #failOnHighSeverityThreshold: false
-        #highSeverityThreshold: '2'
-        #failOnMediumSeverityThreshold: false
-        #mediumSeverityThreshold: '4'
-    #- task: NeuVectorScan@1
-    #  inputs:
-    #    controllerType: 'local'
-    #    controllerLicense: '$(neuvectorLicense.secureFilePath)'
-    #    #containerRegistry: 'dockerhub'
-    #    repository: 'achdevops/holapy-azure'
-    #    tag: '$(Build.BuildId)'    
-    - download: current
-      patterns: '**/*.json'
-    
+        tag: '$(Build.BuildId)'    
     - task: Docker@2
       displayName: Push Image
       inputs:
@@ -67,17 +51,6 @@ stages:
         dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
         tags: |
           $(tag)
-          
     
-    #- task: NeuVectorScan@1
-    #  inputs:
-    #    controllerType: 'external'
-    #    neuvectorController: 'nv-gke'
-    #    containerRegistry: 'dockerhub'
-    #    repository: 'achdevops/holapy-azure'
-    #    tag: '$(Build.BuildId)'
-    #    reportJsonOutputPath: '$(Pipeline.Workspace)/report.json'
-        #failOnHighSeverityThreshold: true
-        #highSeverityThreshold: '1'
-        #failOnMediumSeverityThreshold: true
-        #mediumSeverityThreshold: '3'
+    - download: current
+      patterns: '**/*.json'
