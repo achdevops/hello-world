@@ -41,6 +41,10 @@ stages:
         nvTag: 'latest'
         repository: 'achdevops/holapy-azure'
         tag: '$(Build.BuildId)'
+        failOnHighSeverityThreshold: true
+        highSeverityThreshold: '5'
+        failOnMediumSeverityThreshold: true
+        mediumSeverityThreshold: '5'
     - script: |
         docker tag achdevops/holapy-azure:$(Build.BuildId) registry.hub.docker.com/achdevops/holapy-azure:$(Build.BuildId)
     - task: Docker@2
