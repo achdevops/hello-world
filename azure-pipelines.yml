@@ -29,7 +29,7 @@ stages:
       name: neuvectorLicense
       displayName: Get NeuVector license
       inputs:
-        secureFile: 'license-may.txt'
+        secureFile: 'nv-sep.license'
     
     - task: NeuVectorScan@2
       displayName: Scan image with NeuVector
