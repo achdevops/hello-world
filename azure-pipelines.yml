@@ -20,7 +20,7 @@ stages:
     - task: Docker@2
       displayName: Build Image
       inputs:
-        repository: 'achdevops/holapy-azure/azue'
+        repository: 'achdevops/holapy-azure'
         command: 'build'
         dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
         tags: $(tag)
@@ -37,7 +37,7 @@ stages:
         scanType: 'standalone'
         license: '$(neuvectorLicense.secureFilePath)'
         nvContainerRegistry: 'nv-registry'
-        nvRepository: 'registry.neuvector.com/scanner'
+        nvRepository: 'scanner'
         nvTag: 'latest'
         repository: 'achdevops/holapy-azure'
         tag: '$(Build.BuildId)'
