@@ -20,7 +20,7 @@ stages:
     - task: Docker@2
       displayName: Build Image
       inputs:
-        repository: 'achdevops/holapy-azure'
+        repository: 'achdevops/holapy-azure/azue'
         command: 'build'
         dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
         tags: $(tag)
