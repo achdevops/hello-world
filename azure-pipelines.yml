@@ -36,8 +36,8 @@ stages:
       inputs:
         scanType: 'standalone'
         license: '$(neuvectorLicense.secureFilePath)'
-        nvContainerRegistry: 'dockerhub'
-        nvRepository: 'neuvector/scanner'
+        nvContainerRegistry: 'nv-registry'
+        nvRepository: 'registry.neuvector.com/scanner'
         nvTag: 'latest'
         repository: 'achdevops/holapy-azure'
         tag: '$(Build.BuildId)'
