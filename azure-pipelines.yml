@@ -39,8 +39,11 @@ stages:
         nvContainerRegistry: 'nv-registry'
         nvRepository: 'scanner'
         nvTag: 'latest'
-        repository: 'achdevops/holapy-azure'
-        tag: '$(Build.BuildId)'
+        #repository: 'achdevops/holapy-azure'
+        #tag: '$(Build.BuildId)'
+        containerRegistry: 'Harbor'
+        repository: 'demo.goharbor.io/neuvector/ubupython36'
+        tag: 'latest'
         failOnHighSeverityThreshold: true
         highSeverityThreshold: '5'
         failOnMediumSeverityThreshold: true
