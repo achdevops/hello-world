@@ -42,7 +42,7 @@ stages:
         #repository: 'achdevops/holapy-azure'
         #tag: '$(Build.BuildId)'
         containerRegistry: 'Harbor'
-        repository: 'demo.goharbor.io/neuvector/ubupython36'
+        repository: 'neuvector/ubupython36'
         tag: 'latest'
         failOnHighSeverityThreshold: true
         highSeverityThreshold: '5'
