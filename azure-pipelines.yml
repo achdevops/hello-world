@@ -29,7 +29,7 @@ stages:
       name: neuvectorLicense
       displayName: Get NeuVector license
       inputs:
-        secureFile: 'nv-sep.license'
+        secureFile: 'nv-key.feb'
     
     - task: NeuVectorScan@2
       displayName: Scan image with NeuVector
