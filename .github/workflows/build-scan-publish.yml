@@ -25,7 +25,7 @@ jobs:
           docker cp nv.scanner:/var/neuvector/scan_result.json .
           docker rm nv.scanner
     
-    - name: Scan Report Analysis
+    - name: Analysis Scan Report & Check Criteria
       run: |
           filename="security-report.csv"
           labels='"name","score","severity","description","package_name","package_version","fixed_version","link","published_timestamp","last_modified_timestamp"'
@@ -47,9 +47,40 @@ jobs:
           VUL_LIST=`printf '["%s"]' "${vul_names_to_fail//,/\",\"}"`
           VUL_LIST_FOUND=`cat scan_result.json | jq --arg arr "$VUL_LIST" '.report.vulnerabilities[] | select(.name as $n | $arr | index($n)) |.name'`
     
+          if [ -z "$VUL_LIST_FOUND" ]; then
+            echo -e "Found High Vulnerabilities = $FOUND_HIGH \nFound Medium Vulnerabilities = $FOUND_MEDIUM \n" > scan-summary.txt
+          else
+            echo -e "Found specific named vulnerabilities: \n$VUL_LIST_FOUND \n\nHigh Vulnerabilities threshold = $high_vul_to_fail \nFound High Vulnerabilities = $FOUND_HIGH \n\nMedium vulnerabilities threshold = $medium_vul_to_fail\nFound Medium Vulnerabilities = $FOUND_MEDIUM \n" > scan-summary.txt
+          fi
 
+          if [[ ! -z $VUL_LIST_FOUND ]]; then
+            echo Fail due to found specific named vulnerabilities.
+            scan_fail="true"
+          elif [ $high_vul_to_fail -ne 0 -a $FOUND_HIGH -ge $high_vul_to_fail ]; then
+            echo Fail due to high vulnerabilities found exceeds the criteria.
+            scan_fail="true"
+          elif [ $medium_vul_to_fail -ne 0 -a $FOUND_MEDIUM -ge $medium_vul_to_fail ]; then
+            echo Fail due to medium vulnerabilities found exceeds the criteria.
+            scan_fail="true"
+          else
+            echo Pass the criteria check.
+            scan_fail="false"
+          fi
 
+          if [ $scan_fail == "true" ]; then
+            echo -e "Image scanning failed.\n\n" >> scan-summary.txt
+            exit 1
+          else
+            echo -e "Image scanning succeed.\n\n" >> scan-summary.txt
+            cat scan-summary.txt
+          fi
 
+    - name: 'Security Report Artifact'
+      uses: actions/upload-artifact@v3
+      with:
+        name: my-report
+        path: security-report.csv
+        retention-days: 5
 
     - name: Log in to the Container registry
       uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
