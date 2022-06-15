@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Neuvector Scan Image CI
 
 on:
   push:
@@ -6,15 +6,16 @@ on:
   pull_request:
     branches: [ "feature/actions" ]
 env:
-  LICENSE: "OSS"
+  LICENSE: ""
   SCANNER_IMAGE: "neuvector/scanner:latest"
   IMAGE_NAME: "ghcr.io/achdevops/hello-world/pyhton-in-actions"
+  #check criteria to push the image to the registry
   high_vul_to_fail: 0
   medium_vul_to_fail: 0
   vul_names_to_fail: ""
 
 jobs:
-  build-scan-publish:
+  build-scan-report-check-publish:
     runs-on: ubuntu-latest
     environment: secrets
 
