@@ -9,6 +9,10 @@ env:
   LICENSE: "OSS"
   SCANNER_IMAGE: "neuvector/scanner:latest"
   IMAGE_NAME: "ghcr.io/achdevops/hello-world/pyhton-in-actions"
+  high_vul_to_fail: 10
+  medium_vul_to_fail: 0
+  vul_names_to_fail: ""
+
 jobs:
   build-scan-publish:
     runs-on: ubuntu-latest
