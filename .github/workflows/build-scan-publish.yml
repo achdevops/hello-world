@@ -1,4 +1,4 @@
-name: Neuvector Scan Image CI
+name: NV Image Scan in Github Actions Example
 
 on:
   push:
