@@ -5,14 +5,15 @@ on:
     branches: [ "feature/actions" ]
   pull_request:
     branches: [ "feature/actions" ]
-
+env:
+  LICENSE: "OSS"
+  SCANNER_IMAGE: "neuvector/scanner:latest"
+  IMAGE_NAME: "my-pyhton-app"
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-pyhton-app:$(date +%s)
+      run: docker build . --file Dockerfile --tag $IMAGE_NAME:$GITHUB_RUN_NUMBER
