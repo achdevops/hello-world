@@ -23,6 +23,8 @@ jobs:
       run: |
           docker run -i --privileged --name nv.scanner -e SCANNER_REPOSITORY=$IMAGE_NAME -e SCANNER_TAG=$GITHUB_RUN_NUMBER -e SCANNER_LICENSE=$LICENSE -v /var/run/docker.sock:/var/run/docker.sock -v /var/neuvector:/var/neuvector  $SCANNER_IMAGE
           docker cp nv.scanner:/var/neuvector/scan_result.json .
+          ls -la
+          cat scan_result.json
           docker rm nv.scanner
 
     - name: Log in to the Container registry
