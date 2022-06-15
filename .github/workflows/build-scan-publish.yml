@@ -25,7 +25,7 @@ jobs:
           docker cp nv.scanner:/var/neuvector/scan_result.json .
           docker rm nv.scanner
     
-    - name: Security Scan Image
+    - name: Scan Report Analysis
       run: |
           filename="security-report.csv"
           labels='"name","score","severity","description","package_name","package_version","fixed_version","link","published_timestamp","last_modified_timestamp"'
@@ -33,7 +33,15 @@ jobs:
           query='"report".vulnerabilities[]'
           #transform and export to csv file - scan report
           cat scan-repository.json | jq -r '['$labels'],(.'$query' | ['$vars'])|@csv' > $filename
-          ls -la
+          
+          VUL_NUM=`cat scan-repository.json | jq '.report.vulnerabilities | length'`
+          if [ $VUL_NUM -eq 0 ]; then
+            echo No vulnerabilities found.
+          else
+            echo "Total number of vulnerabilities, $VUL_NUM, grouped by package name with vulnerability name"
+            jq '[.report.vulnerabilities | group_by(.package_name) | .[] | {package_name: .[0].package_name, vuln_name: [.[].name]}]' scan-repository.json
+          fi
+
 
 
     - name: Log in to the Container registry
