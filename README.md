@@ -13,3 +13,6 @@
 - Create a CSV Report Artifact
 - Check the criteria for By Name, HIGH or MED Vulnerabilities from the report
 - if criteria pass, push the image to the registry.
+
+## Artifact
+- zip file with the csv report
