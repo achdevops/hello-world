@@ -9,7 +9,7 @@ env:
   LICENSE: "OSS"
   SCANNER_IMAGE: "neuvector/scanner:latest"
   IMAGE_NAME: "ghcr.io/achdevops/hello-world/pyhton-in-actions"
-  high_vul_to_fail: 10
+  high_vul_to_fail: 0
   medium_vul_to_fail: 0
   vul_names_to_fail: ""
 
@@ -28,8 +28,7 @@ jobs:
           docker run -i --privileged --name nv.scanner -e SCANNER_REPOSITORY=$IMAGE_NAME -e SCANNER_TAG=$GITHUB_RUN_NUMBER -e SCANNER_LICENSE=$LICENSE -v /var/run/docker.sock:/var/run/docker.sock -v /var/neuvector:/var/neuvector  $SCANNER_IMAGE
           docker cp nv.scanner:/var/neuvector/scan_result.json .
           docker rm nv.scanner
-    
-    - name: Analysis Scan Report & Check Criteria
+    - name: Create Security Scan Report
       run: |
           filename="security-report.csv"
           labels='"name","score","severity","description","package_name","package_version","fixed_version","link","published_timestamp","last_modified_timestamp"'
@@ -37,7 +36,17 @@ jobs:
           query='"report".vulnerabilities[]'
           #transform and export to csv file - scan report
           cat scan_result.json | jq -r '['$labels'],(.'$query' | ['$vars'])|@csv' > $filename
-          
+    
+    - name: 'Security Report Artifact'
+      uses: actions/upload-artifact@v3
+      with:
+        name: my-report
+        path: security-report.csv
+        retention-days: 5
+
+
+    - name: Security Analysis - Check Criteria
+      run: |
           VUL_NUM=`cat scan_result.json | jq '.report.vulnerabilities | length'`
           if [ $VUL_NUM -eq 0 ]; then
             echo No vulnerabilities found.
@@ -79,13 +88,6 @@ jobs:
             cat scan-summary.txt
           fi
 
-    - name: 'Security Report Artifact'
-      uses: actions/upload-artifact@v3
-      with:
-        name: my-report
-        path: security-report.csv
-        retention-days: 5
-
     - name: Log in to the Container registry
       uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
       with:
@@ -93,5 +95,5 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.MY_TOKEN }}
     
-    - name: Push Image2Registry
+    - name: Push Image to Registry (Passed Criteria)
       run: docker push $IMAGE_NAME:$GITHUB_RUN_NUMBER
